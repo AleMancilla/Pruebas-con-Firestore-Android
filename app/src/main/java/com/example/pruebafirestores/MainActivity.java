@@ -63,8 +63,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(documentSnapshot.exists())
                 {
-                    String title = documentSnapshot.getString(KEY_TITLE);
-                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                    ///String title = documentSnapshot.getString(KEY_TITLE);
+                    ///String description = documentSnapshot.getString(KEY_DESCRIPTION);
+
+                    ///textViewMostrar.setText("titulo "+ title+"\nDescripcion "+description);
+                    Note note = documentSnapshot.toObject(Note.class);
+                    String title = note.getTitle();
+                    String description = note.getDescription();
 
                     textViewMostrar.setText("titulo "+ title+"\nDescripcion "+description);
                 }
@@ -81,9 +86,11 @@ public class MainActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString();
         String descripcion = editTextDescription.getText().toString();
 
-        Map<String, Object> note = new HashMap<>();
-        note.put(KEY_TITLE,title);
-        note.put(KEY_DESCRIPTION,descripcion);
+        //Map<String, Object> note = new HashMap<>();
+        //note.put(KEY_TITLE,title);
+        //note.put(KEY_DESCRIPTION,descripcion);
+
+        Note note = new Note(title,descripcion);
 
         noteRef.set(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -110,10 +117,15 @@ public class MainActivity extends AppCompatActivity {
                         //verificamos si existe
                         if(documentSnapshot.exists())
                         {
-                            String title = documentSnapshot.getString(KEY_TITLE);
-                            String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                            ///String title = documentSnapshot.getString(KEY_TITLE);
+                            ///String description = documentSnapshot.getString(KEY_DESCRIPTION);
 
                             //Map<String, Object> note = documentSnapshot.getData();
+
+                            Note note = documentSnapshot.toObject(Note.class);
+                            String title = note.getTitle();
+                            String description = note.getDescription();
+
                             textViewMostrar.setText("titulo "+ title+"\nDescripcion "+description);
                         }
                         else
