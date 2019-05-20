@@ -13,7 +13,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference noteRef = db.document("Notebook/My first note");
+    private ListenerRegistration noteListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,30 @@ public class MainActivity extends AppCompatActivity {
         editTextTitle = (EditText) findViewById(R.id.edit_text_titulo);
         editTextDescription = (EditText) findViewById(R.id.edit_text_descripcion);
         textViewMostrar = (TextView) findViewById(R.id.textViewmostrar);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        noteRef.addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if(e != null)
+                {
+                    Toast.makeText(MainActivity.this, "error on start", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, e.toString());
+                    return;
+                }
+                if(documentSnapshot.exists())
+                {
+                    String title = documentSnapshot.getString(KEY_TITLE);
+                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+
+                    textViewMostrar.setText("titulo "+ title+"\nDescripcion "+description);
+                }
+            }
+        });
     }
 
     public void saveNotes(View v)
