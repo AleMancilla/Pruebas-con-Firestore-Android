@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -24,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText editTextTitle;
     private EditText editTextDescription;
+    private TextView textViewMostrar;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DocumentReference noteRef = db.document("Notebook/My first note");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         editTextTitle = (EditText) findViewById(R.id.edit_text_titulo);
         editTextDescription = (EditText) findViewById(R.id.edit_text_descripcion);
-
+        textViewMostrar = (TextView) findViewById(R.id.textViewmostrar);
     }
 
     public void saveNotes(View v)
@@ -46,11 +51,41 @@ public class MainActivity extends AppCompatActivity {
         note.put(KEY_TITLE,title);
         note.put(KEY_DESCRIPTION,descripcion);
 
-        db.collection("Notebook").document("My first note").set(note)
+        noteRef.set(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(MainActivity.this, "Datos salvados correctamente", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
+                    }
+                });
+    }
+
+    public void loadNote(View v)
+    {
+        noteRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        //verificamos si existe
+                        if(documentSnapshot.exists())
+                        {
+                            String title = documentSnapshot.getString(KEY_TITLE);
+                            String description = documentSnapshot.getString(KEY_DESCRIPTION);
+
+                            //Map<String, Object> note = documentSnapshot.getData();
+                            textViewMostrar.setText("titulo "+ title+"\nDescripcion "+description);
+                        }
+                        else
+                        {
+                            Toast.makeText(MainActivity.this, "Documento No existe", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
