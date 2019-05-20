@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -18,6 +19,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewMostrar;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference notebookRef = db.collection("Notebook");
     private DocumentReference noteRef = db.document("Notebook/My first note");
     private ListenerRegistration noteListener;
 
@@ -51,7 +55,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        notebookRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                if (e != null)
+                {
+                    return;
+                }
 
+                String data ="";
+                for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots)
+                {
+                    Note note = documentSnapshots.toObject(Note.class);
+
+                    String title = note.getTitle();
+                    String description = note.getDescription();
+
+                    data += "Title = " + title + "\nDescripcion = "+ description + "\n\n";
+                }
+                textViewMostrar.setText(data);
+            }
+        });
+/*
         noteRef.addSnapshotListener(this,new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
@@ -79,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        */
     }
 
     public void saveNotes(View v)
@@ -163,5 +190,35 @@ public class MainActivity extends AppCompatActivity {
         note.put(KEY_DESCRIPTION, FieldValue.delete());
 
         noteRef.update(note);
+    }
+    public void addNotes(View v)
+    {
+        String title = editTextTitle.getText().toString();
+        String descripcion = editTextDescription.getText().toString();
+
+        Note note = new Note(title,descripcion);
+        notebookRef.add(note);
+    }
+
+    public void LeerTodo(View v)
+    {
+        notebookRef.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        String dato ="";
+                        for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots)
+                        {
+                            Note note = documentSnapshots.toObject(Note.class);
+
+                            String title = note.getTitle();
+                            String description = note.getDescription();
+
+                            dato += "Title = " + title + "\nDescripcion = "+ description + "\n\n";
+                        }
+                        textViewMostrar.setText(dato);
+                    }
+                });
     }
 }

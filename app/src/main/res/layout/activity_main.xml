@@ -35,44 +35,34 @@
             android:id="@+id/button_salvar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SALVAR"
-            android:onClick="saveNotes"/>
+            android:onClick="addNotes"
+            android:text="adicionar" />
 
         <Button
             android:id="@+id/button_leer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Leer"
-            android:onClick="loadNote"
+            android:text="LeerTodo"
+            android:onClick="LeerTodo"
             />
 
-        <Button
-            android:id="@+id/button_descripcion"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="añadir descripcion"
-            android:onClick="updateDescription"
-            />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/button_deleteNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Borrar nota"
-            android:onClick="deleteNote"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_deleteDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Borrar Descripcion"
-            android:onClick="deleteDescription"/>
+                <TextView
+                    android:id="@+id/textViewmostrar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </ScrollView>
 
-        <TextView
-            android:id="@+id/textViewmostrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
