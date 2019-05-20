@@ -1,6 +1,9 @@
 package com.example.pruebafirestores;
 
+import com.google.firebase.firestore.Exclude;
+
 public class Note {
+    private String documentID;
     private String title;
     private String description;
 
@@ -10,6 +13,17 @@ public class Note {
     {
         this.title=title;
         this.description=description;
+    }
+
+    @Exclude
+    public String getdocumentID()
+    {
+        return documentID;
+    }
+
+    public void setdocumentID(String documentID)
+    {
+        this.documentID=documentID;
     }
 
     public String getTitle()

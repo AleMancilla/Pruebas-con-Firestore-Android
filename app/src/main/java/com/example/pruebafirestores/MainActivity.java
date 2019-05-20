@@ -67,11 +67,13 @@ public class MainActivity extends AppCompatActivity {
                 for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots)
                 {
                     Note note = documentSnapshots.toObject(Note.class);
+                    note.setdocumentID(documentSnapshots.getId());
 
+                    String documentID = note.getdocumentID();
                     String title = note.getTitle();
                     String description = note.getDescription();
 
-                    data += "Title = " + title + "\nDescripcion = "+ description + "\n\n";
+                    data += "ID "+documentID+"\nTitle = " + title + "\nDescripcion = "+ description + "\n\n";
                 }
                 textViewMostrar.setText(data);
             }
@@ -210,12 +212,16 @@ public class MainActivity extends AppCompatActivity {
                         String dato ="";
                         for (QueryDocumentSnapshot documentSnapshots : queryDocumentSnapshots)
                         {
+
                             Note note = documentSnapshots.toObject(Note.class);
+
+                            note.setdocumentID(documentSnapshots.getId());
+                            String documentID = note.getdocumentID();
 
                             String title = note.getTitle();
                             String description = note.getDescription();
 
-                            dato += "Title = " + title + "\nDescripcion = "+ description + "\n\n";
+                            dato += "ID "+documentID+"\nTitle = " + title + "\nDescripcion = "+ description + "\n\n";
                         }
                         textViewMostrar.setText(dato);
                     }
