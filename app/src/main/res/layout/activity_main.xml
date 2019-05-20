@@ -46,6 +46,14 @@
             android:onClick="loadNote"
             />
 
+        <Button
+            android:id="@+id/button_descripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="añadir descripcion"
+            android:onClick="updateDescription"
+            />
+
         <TextView
             android:id="@+id/textViewmostrar"
             android:layout_width="match_parent"
